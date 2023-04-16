@@ -3,6 +3,7 @@ package com.backend.PhotoRestAPI.controller;
 import com.backend.PhotoRestAPI.model.Photo;
 import com.backend.PhotoRestAPI.service.PhotoService;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,14 @@ public class PhotoController {
         photoService.create(photo);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(photo); //TODO change
+    }
+
+    @PutMapping("/{id}")
+    Photo update(@PathVariable("id") Long id,
+                 @RequestBody @NonNull Photo photo) {
+        photo.setId(id);
+        return photoService.update(photo);
+
     }
 
     @GetMapping

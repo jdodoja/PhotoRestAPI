@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
 import java.util.List;
@@ -42,23 +44,11 @@ public class PhotoEntity {
     )
     private List<TagEntity> tags;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
     private Instant createdAt;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
     private Instant updatedAt;
-
-    @PrePersist
-    protected void onCreate(){
-        if(Objects.isNull(createdAt)){
-            createdAt=Instant.now();
-        }
-        if(Objects.isNull(updatedAt)){ //check
-            updatedAt=Instant.now();
-        }
-    }
-    @PreUpdate
-    protected void onUpdate(){
-        setUpdatedAt(Instant.now());
-    }
 }
