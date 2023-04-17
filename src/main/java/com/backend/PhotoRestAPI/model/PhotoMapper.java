@@ -19,13 +19,15 @@ public interface PhotoMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "updatedAt", expression = "java(java.time.Instant.now())")
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "imageUrl", ignore = true)
     @Mapping(target = "tags", ignore = true)
     void updateImageFromDto(Photo photo, @MappingTarget PhotoEntity photoEntity);
 
     default List<String> mapTagsToStrings(List<TagEntity> tags) {
-        return tags.stream().map(TagEntity::getName).collect(Collectors.toList());
+        return tags.stream()
+                .map(TagEntity::getName)
+                .collect(Collectors.toList());
     }
 
 }
