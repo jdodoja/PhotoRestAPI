@@ -4,7 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = TagMapper.class)
@@ -25,9 +27,10 @@ public interface PhotoMapper {
     void updateImageFromDto(Photo photo, @MappingTarget PhotoEntity photoEntity);
 
     default List<String> mapTagsToStrings(List<TagEntity> tags) {
-        return tags.stream()
-                .map(TagEntity::getName)
-                .collect(Collectors.toList());
+        return Objects.isNull(tags) ? new ArrayList<>() :
+                tags.stream()
+                        .map(TagEntity::getName)
+                        .collect(Collectors.toList());
     }
 
 }

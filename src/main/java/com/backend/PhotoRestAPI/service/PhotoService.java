@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -57,9 +56,9 @@ public class PhotoService {
     }
 
     public Photo getPhotoAtTime(Long id, LocalDateTime timestamp) {
-        var a = getPhotoEntityAudits(id, timestamp);
-        if (a.isPresent() && a.get() instanceof PhotoEntity entity) {
-            return photoMapper.fromEntity(entity);
+        var entity = getPhotoEntityAudits(id, timestamp).stream().findFirst();
+        if (entity.isPresent()) {
+            return photoMapper.fromEntity(entity.get());
         } else {
             throw new EntityNotFoundException("Photo for given time not found");
         }
@@ -97,11 +96,11 @@ public class PhotoService {
 
     }
 
-    private Optional getPhotoEntityAudits(Long id, LocalDateTime updatedAt) {
+    private List<PhotoEntity> getPhotoEntityAudits(Long id, LocalDateTime updatedAt) {
         AuditReader reader = AuditReaderFactory.get(factory.createEntityManager());
 
         return reader.createQuery()
-                .forRevisionsOfEntity(PhotoEntity.class, PhotoEntity.class.getName(), true, true)
+                .forRevisionsOfEntity(PhotoEntity.class, PhotoEntity.class.getName(), true, false)
                 .add(AuditEntity.id()
                         .eq(id))
                 .add(AuditEntity.property("updatedAt")
@@ -109,10 +108,7 @@ public class PhotoService {
                 .addOrder(AuditEntity.revisionNumber()
                         .desc())
                 .setMaxResults(1)
-                .getResultList()
-                .stream()
-                .findFirst();
-
+                .getResultList();
     }
 
 

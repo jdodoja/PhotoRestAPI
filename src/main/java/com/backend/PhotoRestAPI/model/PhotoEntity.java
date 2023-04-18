@@ -40,7 +40,7 @@ public class PhotoEntity {
     private Double height;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "photo_tag",
             joinColumns = @JoinColumn(name = "photo_id"),
@@ -62,7 +62,7 @@ public class PhotoEntity {
         if (Objects.isNull(createdAt)) {
             createdAt = LocalDateTime.now();
         }
-        if (Objects.isNull(updatedAt)) { //check
+        if (Objects.isNull(updatedAt)) {
             updatedAt = LocalDateTime.now();
         }
     }
